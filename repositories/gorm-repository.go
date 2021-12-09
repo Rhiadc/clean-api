@@ -15,16 +15,14 @@ var (
 )
 
 func NewGormRepository() UserRepository {
-	config.Connect()
-	db = config.GetDB()
+	db = configDB()
 	db.AutoMigrate(&models.User{})
 	defer db.Close()
 	return &GormRepo{}
 }
 
 func (g *GormRepo) CreateUser(u *models.User) *models.User {
-	config.Connect()
-	db = config.GetDB()
+	db = configDB()
 	db.NewRecord(u)
 	result := db.Create(&u)
 
@@ -36,12 +34,57 @@ func (g *GormRepo) CreateUser(u *models.User) *models.User {
 	return u
 }
 
-func (g *GormRepo) GetUser(Id int) *models.User {
-	config.Connect()
-	db = config.GetDB()
+func (g *GormRepo) GetUser(Id int) (*models.User, error) {
+	db = configDB()
 	var getUser models.User
 
 	defer db.Close()
-	_ = db.Where("ID = ?", Id).Find(&getUser)
-	return &getUser
+	if err := db.First(&getUser, Id).Error; err != nil {
+		return nil, err
+	}
+	return &getUser, nil
+}
+
+func (g *GormRepo) UpdateUser(Id int, user *models.User) (*models.User, error) {
+	db = configDB()
+	defer db.Close()
+
+	us := &models.User{}
+
+	updatedUser := db.Model(us).Where("id = ?", Id).Updates(user)
+
+	if updatedUser.Error != nil {
+		return nil, updatedUser.Error
+	}
+
+	return us, nil
+}
+
+func (g *GormRepo) GetAllUsers() []*models.User {
+	db = configDB()
+	var allUsers []*models.User
+
+	defer db.Close()
+
+	db.Find(&allUsers)
+
+	return allUsers
+}
+
+func (*GormRepo) DeleteUser(Id int) error {
+	db = configDB()
+	var user models.User
+	result := db.Where("id = ?", Id).Delete(&user)
+	fmt.Println(result)
+	defer db.Close()
+
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func configDB() *gorm.DB {
+	config.Connect()
+	return config.GetDB()
 }
