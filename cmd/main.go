@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"project/controllers"
 	"project/repositories"
+	"project/routes"
 	"project/services"
 
 	"github.com/gorilla/mux"
@@ -25,14 +26,9 @@ func main() {
 	}
 
 	sm := mux.NewRouter()
-
-	getRouter := sm.Methods("GET").Subrouter()
-	getRouter.HandleFunc("/{id:[0-9]+}", userController.GetUser)
-
-	postRouter := sm.Methods("POST").Subrouter()
-	postRouter.HandleFunc("/", userController.CreateUser)
+	routes.InitRoutes(sm, userController)
 
 	port := ":9090"
 	fmt.Printf("Mux HTTP server running on port %v", port)
-	http.ListenAndServe(port, sm)
+	log.Fatal(http.ListenAndServe(port, sm))
 }
