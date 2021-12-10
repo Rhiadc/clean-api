@@ -13,33 +13,33 @@ type UserService interface {
 	DeleteUser(Id int) error
 }
 
-type service struct{}
+type userService struct{}
 
 var (
-	repo repositories.UserRepository
+	userRepo repositories.UserRepository
 )
 
 func NewUserService(repository repositories.UserRepository) UserService {
-	repo = repository
-	return &service{}
+	userRepo = repository
+	return &userService{}
 }
 
-func (*service) Create(user *models.User) *models.User {
-	return repo.CreateUser(user)
+func (*userService) Create(user *models.User) *models.User {
+	return userRepo.CreateUser(user)
 }
 
-func (*service) GetBy(id int) (*models.User, error) {
-	return repo.GetUser(id)
+func (*userService) GetBy(id int) (*models.User, error) {
+	return userRepo.GetUser(id)
 }
 
-func (*service) GetAllUsers() []*models.User {
-	return repo.GetAllUsers()
+func (*userService) GetAllUsers() []*models.User {
+	return userRepo.GetAllUsers()
 }
 
-func (*service) UpdateUser(Id int, user *models.User) (*models.User, error) {
-	return repo.UpdateUser(Id, user)
+func (*userService) UpdateUser(Id int, user *models.User) (*models.User, error) {
+	return userRepo.UpdateUser(Id, user)
 }
 
-func (*service) DeleteUser(Id int) error {
-	return repo.DeleteUser(Id)
+func (*userService) DeleteUser(Id int) error {
+	return userRepo.DeleteUser(Id)
 }

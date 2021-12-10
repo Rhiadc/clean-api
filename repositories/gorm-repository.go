@@ -14,9 +14,10 @@ var (
 	db *gorm.DB
 )
 
-func NewGormRepository() UserRepository {
+func NewGormRepository() *GormRepo {
 	db = configDB()
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Post{})
 	defer db.Close()
 	return &GormRepo{}
 }
@@ -30,7 +31,7 @@ func (g *GormRepo) CreateUser(u *models.User) *models.User {
 	if result.Error != nil {
 		panic(result.Error)
 	}
-	fmt.Println(result)
+
 	return u
 }
 
@@ -82,6 +83,21 @@ func (*GormRepo) DeleteUser(Id int) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (*GormRepo) CreatePost(p *models.Post) *models.Post {
+	db = configDB()
+	db.NewRecord(p)
+
+	result := db.Create(&p)
+
+	defer db.Close()
+
+	if result.Error != nil {
+		panic(result.Error)
+	}
+
+	return p
 }
 
 func configDB() *gorm.DB {
