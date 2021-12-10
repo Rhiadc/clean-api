@@ -1,10 +1,12 @@
 package models
 
+import "time"
+
 type Post struct {
-	ID        string
-	Title     string
-	Content   string
-	UserId    string
-	Published string
-	updated   string
+	ID          uint64    `gorm:"primary_key;auto_increment" json:"id"`
+	Title       string    `gorm:"size:255; not null;unique" json:"title"`
+	Content     string    `gorm:"size:255; not null;" json:"content"`
+	UserId      int       `gorm:"not null" json:"user_id"`
+	PublishedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"published_at"`
+	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
