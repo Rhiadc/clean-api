@@ -14,7 +14,7 @@ var (
 	userService services.UserService
 )
 
-type controller struct{}
+type userController struct{}
 
 type UserController interface {
 	GetUser(w http.ResponseWriter, r *http.Request)
@@ -26,10 +26,10 @@ type UserController interface {
 
 func NewUserController(service services.UserService) UserController {
 	userService = service
-	return &controller{}
+	return &userController{}
 }
 
-func (*controller) GetUser(w http.ResponseWriter, r *http.Request) {
+func (*userController) GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	id, err := getId(r)
@@ -49,7 +49,7 @@ func (*controller) GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (*controller) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (*userController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -66,7 +66,7 @@ func (*controller) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (*controller) GetAllUser(w http.ResponseWriter, r *http.Request) {
+func (*userController) GetAllUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	users := userService.GetAllUsers()
 	err := json.NewEncoder(w).Encode(users)
@@ -76,7 +76,7 @@ func (*controller) GetAllUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (*controller) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (*userController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	id, err := getId(r)
@@ -100,7 +100,7 @@ func (*controller) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatedUser)
 }
 
-func (*controller) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (*userController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	id, err := getId(r)

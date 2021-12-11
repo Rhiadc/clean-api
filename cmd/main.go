@@ -17,6 +17,10 @@ var (
 	userRepo       repositories.UserRepository = repositories.NewGormRepository()
 	userService    services.UserService        = services.NewUserService(userRepo)
 	userController controllers.UserController  = controllers.NewUserController(userService)
+
+	postRepo       repositories.PostRepository = repositories.NewGormRepository()
+	postService    services.PostService        = services.NewPostService(postRepo)
+	postController controllers.PostController  = controllers.NewPostController(postService)
 )
 
 func main() {
@@ -26,7 +30,7 @@ func main() {
 	}
 
 	sm := mux.NewRouter()
-	routes.InitRoutes(sm, userController)
+	routes.InitRoutes(sm, userController, postController)
 
 	port := ":9090"
 	fmt.Printf("Mux HTTP server running on port %v", port)
